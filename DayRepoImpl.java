@@ -26,13 +26,6 @@ public class DayRepoImpl implements DayRepo{
 		return day;
 	}
 
-	
-	/*public Day findByPlayerName(String playerName) {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-
-	
 	public List<Day> findByGamesName(String gameName) {
 		if(gameName == null)
 			throw new NullPointerException();
@@ -48,8 +41,6 @@ public class DayRepoImpl implements DayRepo{
 				
 				if(sname==gameName)
 				{
-					//System.out.println("first : "+sname);
-					//System.out.println("second :"+gameName);
 					d1.add(d);
 				}
 			}

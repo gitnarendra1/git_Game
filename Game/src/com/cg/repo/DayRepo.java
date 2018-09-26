@@ -1,8 +1,13 @@
 package com.cg.repo;
 
-import com.cg.bean.Day;
-import com.cg.bean.Game;
+import java.util.List;
+
+import com.cg.beans.Day;
+import com.cg.exception.DuplicateElementException;
 
 public interface DayRepo {
-	Day save(Day d);
+	
+	public Day save(Day day) throws DuplicateElementException;
+	
+	public List<Day> findByGamesName(String gameName);
 }

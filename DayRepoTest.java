@@ -15,14 +15,6 @@ import com.cg.repo.DayRepo;
 import com.cg.repo.DayRepoImpl;
 
 public class DayRepoTest {
-
-	/*private DayRepo dayRepo;
-		
-	@Before
-	public void init(){
-		
-		dayRepo = new DayRepoImpl();
-	}*/
 	
 	@Test(expected=NullPointerException.class)
 	public void test_save() {
@@ -31,8 +23,7 @@ public class DayRepoTest {
 		try {
 			dayRepo.save(day);
 		} catch (DuplicateElementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+						e.printStackTrace();
 		}
 	}
 	
@@ -60,60 +51,5 @@ public class DayRepoTest {
 		day1.setName("hockey");
 		dayRepo.save(day1);
 	}
-	
 
-	@Test(expected=NullPointerException.class)
-	public void test_findByGamesName() {
-		DayRepo dayRepo = new DayRepoImpl();
-		String GameName =null;
-		dayRepo.findByGamesName(GameName);
-	}
-	
-	@Test
-	public void test_findByGamesName1() {
-		DayRepo dayRepo = new DayRepoImpl();
-		Game game = new Game();
-		game.setName("hockey");
-		
-		Day day = new Day();
-		day.setName("1");
-		day.setGame(game);
-		
-		try {
-			dayRepo.save(day);
-		} catch (DuplicateElementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		String GameName ="hockey";
-		List<Day> days=dayRepo.findByGamesName(GameName);
-	
-		assertFalse(days.isEmpty());
-	}
-	
-	@Test
-	public void test_findByGamesName2() {
-		DayRepo dayRepo = new DayRepoImpl();
-		Game game = new Game();
-		game.setName("hockey");
-		
-		Day day = new Day();
-		day.setName("1");
-		day.setGame(game);
-		
-		try {
-			dayRepo.save(day);
-		} catch (DuplicateElementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		String GameName ="cricket";
-		List<Day> days=dayRepo.findByGamesName(GameName);
-		System.out.println(days.size());
-		assertTrue(days.isEmpty());
-	}
-	
-	
 }

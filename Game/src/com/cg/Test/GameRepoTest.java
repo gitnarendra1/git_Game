@@ -8,8 +8,8 @@ import com.cg.repo.GameRepo;
 import com.cg.service.GameService;
 
 public class GameRepoTest {
-	private GameService service;
-	@Mock private GameRepo repo;	
+	
+	private GameRepo repo;	
 	
 	@Test
 	public Game test_save(Game g)

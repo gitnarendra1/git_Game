@@ -1,71 +1,75 @@
 package com.cg.Test;
 
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import java.util.ArrayList;
+import static org.mockito.Mockito.when;
+
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.cg.bean.Day;
+import com.cg.bean.Game;
+import com.cg.exception.DuplicateGameException;
 import com.cg.repo.DayRepo;
 import com.cg.repo.GameRepo;
 import com.cg.service.DayService;
+import com.cg.service.GameService;
+import com.cg.serviceImpl.DayServiceImpl;
+import com.cg.serviceImpl.GameServiceImpl;
 
 
 public class DayServiceTest {
+
 	private DayService service;
-	@Mock private DayRepo repo;
-	
-	@Test
-	public void test_day_object_null() {
-		  Day days = null;		 
-		    assertNull("day object is null", days);
+	@Mock
+	private DayRepo repo;
+
+	@Before
+	public void init() {
+		MockitoAnnotations.initMocks(this);
+		service = new DayServiceImpl(repo);
 	}
-	
-	@Test(expected=NullPointerException.class)
-	public void test_save_throwsNullPointerException(){
-		Day day1=new Day();
-		service.add(day1);
+
+	/* 1 : Null days cannot be added */
+	@Test(expected = IllegalArgumentException.class)
+	public void test_add_dayObjectIsNull() {
+		Day day = null;
+		when(repo.save(day)).thenReturn(day);
+		assertEquals(day, service.add(null));
+	}
+
+	/* 2 : Day name cannot be null */
+	@Test(expected = IllegalArgumentException.class)
+	public void test_add_dayNameIsNull_throwsExceptionForIlllegalArguments() {
+		Set<Game> gameSet = new HashSet<Game>();
+		gameSet.add(new Game("Cricket", (byte) 11));		
+		Day day = new Day(null,gameSet);
+		when(repo.save(day)).thenReturn(day);
+		assertEquals(day, service.add(day));
+	}
+
+	/* 3 : Two days with same name cannot be added */
+	@Test(expected = DuplicateGameException.class)
+	public void test_add_dayNameAlreadyExist() {
+		Set<Game> gameSet = new HashSet<Game>();
+		gameSet.add(new Game("Cricket", (byte) 11));
+		Day day = new Day("Day1",gameSet);
+		when(repo.findByName(day.getName())).thenReturn(day);
+		service.add(day);
 			}
-	
+
+	/* 4 : Valid day should be added */
 	@Test
-	public void test_dayName_null(){
-		Day day1=new Day();
-		day1.setName(null);
-		//assertEquals(null,game1.getName());
-		assertThat(day1.getName(), nullValue(String.class));
-			}
-	
-	@Test
-	public void test_dayName_duplication() {
-		 Day day1=new Day();
-		 day1.setName("Day1");
-		 Day day2=new Day();
-		 day2.setName("Day1");
-		 //assertEquals(game1.getName(),game2.getName());
-		 assertSame("Duplicate Day Name",day1.getName(),day2.getName());
-		 }
-	
-	@Test
-	public void test_add_success(){
-		Day day1=new Day();
-		day1.setName("Day1");
-		Set s=new HashSet();
-		s.add("Cricket");
-		day1.setGames(s);
-		
-	    List<Day> l1=new ArrayList<Day>();
-	    l1.add(day1);
-	    
-	    assertEquals(1, l1.size());
-		}
-	
-	
+	public void test_add_success() {
+		Set<Game> gameSet = new HashSet<Game>();
+		gameSet.add(new Game("Cricket", (byte) 11));
+		Day day = new Day("Day1",gameSet);
+		when(repo.save(day)).thenReturn(day);
+		assertEquals(day, service.add(day));
+	}
+
 }

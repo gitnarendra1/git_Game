@@ -1,72 +1,62 @@
 package com.cg.Test;
 
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import java.util.ArrayList;
-import java.util.List;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import com.cg.bean.Game;
+import com.cg.exception.DuplicateGameException;
 import com.cg.repo.GameRepo;
 import com.cg.service.GameService;
+import com.cg.serviceImpl.GameServiceImpl;
+
 
 public class GameServiceTest {
+
 	private GameService service;
-	@Mock private GameRepo repo;
-	
-	@Test
-	public void test_game_object_null() {
-		 Game games = null;		 
-		    assertNull("game object is null", games);
+	@Mock
+	private GameRepo repo;
+
+	@Before
+	public void init() {
+		MockitoAnnotations.initMocks(this);
+		service = new GameServiceImpl(repo);
 	}
-	
-	@Test(expected=NullPointerException.class)
-	public void test_save_throwsNullPointerException(){
-		Game game1=new Game();
-		service.add(game1);
-			}
-	
+
+	/* 1 : Null games cannot be added */
+	@Test(expected = IllegalArgumentException.class)
+	public void test_add_gameObjectIsNull() {
+		Game game = null;
+		when(repo.save(game)).thenReturn(game);
+		assertEquals(game, service.add(null));
+	}
+
+	/* 2 : Game name cannot be null */
+	@Test(expected = IllegalArgumentException.class)
+	public void test_add_gameNameIsNull_throwsExceptionForIlllegalArguments() {
+		Game game = new Game(null, (byte) 11);
+		when(repo.save(game)).thenReturn(game);
+		assertEquals(game, service.add(new Game(null, (byte) 11)));
+	}
+
+	/* 3 : Two games with same name cannot be added */
+	@Test(expected = DuplicateGameException.class)
+	public void test_add_gameNameAlreadyExist() {
+		Game game = new Game("Cricket", (byte) 11);
+		when(repo.findByName(game.getName())).thenReturn(game);
+		service.add(game);
+	}
+
+	/* 4 : Valid games should be added */
 	@Test
-	public void test_gameName_null(){
-		Game game1=new Game();
-		game1.setName(null);
-		//assertEquals(null,game1.getName());
-		assertThat(game1.getName(), nullValue(String.class));
-			}
-	
-	@Test
-	public void test_gameName_duplication() {
-		 Game game1=new Game();
-		 game1.setName("Cricket");
-		 Game game2=new Game();
-		 game2.setName("Cricket");
-		 //assertEquals(game1.getName(),game2.getName());
-		 assertSame("Duplicate Game Name",game1.getName(),game2.getName());
-		 }
-	
-	@Test
-	public void test_add_success(){
-		Game game1=new Game();
-		game1.setName("Kho Kho");
-		game1.setNumofplayers((byte)11);
-		Game game2=new Game();
-		game2.setName("Kho Kho1");
-		game2.setNumofplayers((byte)11);
-		Game game3=new Game();
-		game3.setName("Kho Kho2");
-		game3.setNumofplayers((byte)11);
-		
-		//service.add(game1);
-		
-	    List<Game> l1=new ArrayList<Game>();
-	    l1.add(game1);
-	    l1.add(game2);
-	    l1.add(game3);
-	    assertEquals(3, l1.size());
-		}
-	
-	
+	public void test_add_success() {
+		Game game = new Game("Cricket", (byte) 11);
+		when(repo.save(game)).thenReturn(game);
+		assertEquals(game, service.add(new Game("Cricket", (byte) 11)));
+	}
+
 }

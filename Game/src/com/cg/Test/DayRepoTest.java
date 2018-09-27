@@ -1,55 +1,47 @@
-package com.cg.repo.test;
+package com.cg.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import com.cg.beans.Day;
-import com.cg.beans.Game;
-import com.cg.exception.DuplicateElementException;
+import com.cg.bean.Day;
+import com.cg.bean.Player;
 import com.cg.repo.DayRepo;
-import com.cg.repo.DayRepoImpl;
+import com.cg.repoImpl.DayRepoImpl;
 
 public class DayRepoTest {
-	
+	private DayRepo dayRepo ;
 	@Test(expected=NullPointerException.class)
 	public void test_save() {
-		DayRepo dayRepo = new DayRepoImpl();
 		Day day = new Day();
-		try {
-			dayRepo.save(day);
-		} catch (DuplicateElementException e) {
-						e.printStackTrace();
-		}
+		dayRepo.save(day);
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void test_save1() {
-		DayRepo dayRepo = new DayRepoImpl();
 		Day day = null;		
-		try {
-			dayRepo.save(day);
-		} catch (DuplicateElementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test(expected=DuplicateElementException.class)
-	public void test_save2() throws DuplicateElementException {
-		DayRepo dayRepo = new DayRepoImpl();
-		
-		Day day = new Day();
-		day.setName("hockey");		
 		dayRepo.save(day);
+			}
+	
+	@Test(expected=Exception.class)
+	public void test_save2() throws Exception {
+		Day player1=new Day();
+		player1.setName("Day1");
 		
-		Day day1 = new Day();
-		day1.setName("hockey");
-		dayRepo.save(day1);
+		Day player2=new Day();
+		player2.setName("Day2");
+		
+		Day player3=new Day();
+		player3.setName("Day3");
+		
+		
+	    List<Day> l1=new ArrayList<Day>();
+	    l1.add(player1);
+	    l1.add(player2);
+	    l1.add(player3);
+	    assertEquals(3, l1.size());
 	}
 
 }

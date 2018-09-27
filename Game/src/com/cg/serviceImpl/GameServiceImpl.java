@@ -4,21 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cg.bean.Game;
+import com.cg.exception.DuplicateGameException;
 import com.cg.repo.GameRepo;
 import com.cg.repoImpl.GameRepoImpl;
 import com.cg.service.GameService;
 
 public class GameServiceImpl implements GameService {
 
-	@Override
-	public Game add(Game g) {
-		
-		GameRepoImpl repoImpl=new GameRepoImpl();
-		g.setName("Cricket");
-		g.setNumofplayers((byte)11);
-		repoImpl.save(g);
-		
-		return g;
+	private GameRepo repo;
+
+	public GameServiceImpl(GameRepo repo) {
+		super();
+		this.repo = repo;
 	}
 
+	public Game add(Game game) {
+
+		if (game == null || game.getName() == null) {
+			throw new IllegalArgumentException();
+		}
+
+		Game existingGame = repo.findByName(game.getName());
+		if (existingGame != null) {
+			throw new DuplicateGameException();
+		}
+		return repo.save(game);
+
+	}
 }

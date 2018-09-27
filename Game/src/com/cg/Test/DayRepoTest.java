@@ -1,47 +1,117 @@
 package com.cg.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+
 import com.cg.bean.Day;
-import com.cg.bean.Player;
+import com.cg.bean.Game;
+import com.cg.exception.DuplicateGameException;
 import com.cg.repo.DayRepo;
 import com.cg.repoImpl.DayRepoImpl;
 
+
 public class DayRepoTest {
-	private DayRepo dayRepo ;
+
+	/*private DayRepo dayRepo;
+		
+	@Before
+	public void init(){
+		
+		dayRepo = new DayRepoImpl();
+	}*/
+	
 	@Test(expected=NullPointerException.class)
 	public void test_save() {
-		Day day = new Day();
-		dayRepo.save(day);
+		DayRepo dayRepo = new DayRepoImpl();
+		Day day = null;
+		
+			dayRepo.save(day);
+		
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void test_save1() {
+		DayRepo dayRepo = new DayRepoImpl();
 		Day day = null;		
-		dayRepo.save(day);
-			}
-	
-	@Test(expected=Exception.class)
-	public void test_save2() throws Exception {
-		Day player1=new Day();
-		player1.setName("Day1");
-		
-		Day player2=new Day();
-		player2.setName("Day2");
-		
-		Day player3=new Day();
-		player3.setName("Day3");
-		
-		
-	    List<Day> l1=new ArrayList<Day>();
-	    l1.add(player1);
-	    l1.add(player2);
-	    l1.add(player3);
-	    assertEquals(3, l1.size());
+		try {
+			dayRepo.save(day);
+		} catch (DuplicateGameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
+	@Test(expected=DuplicateGameException.class)
+	public void test_save2() throws DuplicateGameException {
+		DayRepo dayRepo = new DayRepoImpl();
+		
+		Day day = new Day();
+		day.setName("hockey");		
+		dayRepo.save(day);
+		
+		Day day1 = new Day();
+		day1.setName("hockey");
+		dayRepo.save(day1);
+	}
+	
 
+	@Test(expected=NullPointerException.class)
+	public void test_findByGamesName() {
+		DayRepo dayRepo = new DayRepoImpl();
+		String GameName =null;
+		dayRepo.findByGamesName(GameName);
+	}
+	
+	@Test
+	public void test_findByGamesName1() {
+		DayRepo dayRepo = new DayRepoImpl();
+		Game game = new Game();
+		game.setName("hockey");
+		
+		Day day = new Day();
+		day.setName("1");
+		day.setGame(game);
+		
+		try {
+			dayRepo.save(day);
+		} catch (DuplicateGameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String GameName ="hockey";
+		List<Day> days=dayRepo.findByGamesName(GameName);
+	
+		assertFalse(days.isEmpty());
+	}
+	
+	@Test
+	public void test_findByGamesName2() {
+		DayRepo dayRepo = new DayRepoImpl();
+		Game game = new Game();
+		game.setName("hockey");
+		
+		Day day = new Day();
+		day.setName("1");
+		day.setGame(game);
+		
+		try {
+			dayRepo.save(day);
+		} catch (DuplicateGameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String GameName ="cricket";
+		List<Day> days=dayRepo.findByGamesName(GameName);
+		System.out.println(days.size());
+		assertTrue(days.isEmpty());
+	}
+	
+	
 }

@@ -11,10 +11,14 @@ import com.cg.repo.DayRepo;
 public class DayRepoImpl implements DayRepo{
 	private Set<Day> day;
 
+	public DayRepoImpl() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public Day save(Day day) {
 		// TODO Auto-generated method stub
-		return null;
+		return day;
 	}
 
 	public Day findByName(String name) {

@@ -9,6 +9,11 @@ public class Player {
 	public String getName() {
 		return name;
 	}
+	public Player(String name, Set<Game> game) {
+		super();
+		this.name = name;
+		this.game = game;
+	}
 	public void setName(String name) {
 		this.name = name;
 	}

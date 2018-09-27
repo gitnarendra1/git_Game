@@ -15,11 +15,8 @@ import com.cg.bean.Day;
 import com.cg.bean.Game;
 import com.cg.exception.DuplicateGameException;
 import com.cg.repo.DayRepo;
-import com.cg.repo.GameRepo;
 import com.cg.service.DayService;
-import com.cg.service.GameService;
 import com.cg.serviceImpl.DayServiceImpl;
-import com.cg.serviceImpl.GameServiceImpl;
 
 
 public class DayServiceTest {

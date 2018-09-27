@@ -1,75 +1,76 @@
 package com.cg.Test;
 
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import com.cg.bean.Day;
+import com.cg.bean.Game;
 import com.cg.bean.Player;
+import com.cg.exception.DuplicateGameException;
+import com.cg.repo.GameRepo;
 import com.cg.repo.PlayerRepo;
+import com.cg.service.GameService;
 import com.cg.service.PlayerService;
+import com.cg.serviceImpl.GameServiceImpl;
+import com.cg.serviceImpl.PlayerServiceImpl;
+
 
 public class PlayerServiceTest {
-	
-		private PlayerService service;
-		@Mock private PlayerRepo repo;
-		
-		@Test
-		public void test_player_object_null() {
-			 Player player = null;		 
-			    assertNull("Player object is null", player);
-		}
-		
-		@Test(expected=NullPointerException.class)
-		public void test_save_throwsNullPointerException(){
-			Player player1=new Player();
-			service.add(player1);
-				}
-		
-		@Test
-		public void test_playerName_null(){
-			Player player1=new Player();
-			player1.setName(null);
-			//assertEquals(null,palyer.getName());
-			assertThat(player1.getName(), nullValue(String.class));
-				}
-		
-		@Test
-		public void test_palyerName_duplication() {
-			Player player=new Player();
-			player.setName("Virat");
-			Player player2=new Player();
-			 player2.setName("Virat");
-			 //assertEquals(game1.getName(),game2.getName());
-			 assertSame("Duplicate Player Name",player.getName(),player2.getName());
-			 }
-		
-		@Test
-		public void test_add_success(){
-			Player player1=new Player();
-			player1.setName("Virat");
-			
-			Player player2=new Player();
-			player2.setName("Sachin");
-			
-			Player player3=new Player();
-			player3.setName("Dhoni");
-			
-			
-		    List<Player> l1=new ArrayList<Player>();
-		    l1.add(player1);
-		    l1.add(player2);
-		    l1.add(player3);
-		    assertEquals(3, l1.size());
-			}
-		
-		
-	
+
+	private PlayerService service;
+	@Mock
+	private PlayerRepo repo;
+
+	@Before
+	public void init() {
+		MockitoAnnotations.initMocks(this);
+		service = new PlayerServiceImpl(repo);
+	}
+
+	/* 1 : Null games cannot be added */
+	@Test(expected = IllegalArgumentException.class)
+	public void test_add_playerObjectIsNull() {
+		Player player = null;
+		when(repo.save(player)).thenReturn(player);
+		assertEquals(player, service.add(null));
+	}
+
+	/* 2 : Player name cannot be null */
+	@Test(expected = IllegalArgumentException.class)
+	public void test_add_playerNameIsNull_throwsExceptionForIlllegalArguments() {
+		Set<Game> gameSet = new HashSet<Game>();
+		gameSet.add(new Game("Cricket", (byte) 11));		
+		Player player = new Player(null,gameSet);
+		when(repo.save(player)).thenReturn(player);
+		assertEquals(player, service.add(player));
+	}
+
+	/* 3 : Two players with same name cannot be added */
+	@Test(expected = DuplicateGameException.class)
+	public void test_add_gameNameAlreadyExist() {
+		Set<Game> gameSet = new HashSet<Game>();
+		gameSet.add(new Game("Cricket", (byte) 11));		
+		Player player = new Player("Virat",gameSet);
+		when(repo.findByName(player.getName())).thenReturn(player);
+		service.add(player);
+	}
+
+	/* 4 : Valid games should be added */
+	@Test
+	public void test_add_success() {
+		Set<Game> gameSet = new HashSet<Game>();
+		gameSet.add(new Game("Cricket", (byte) 11));
+		Player player = new Player("Virat",gameSet);
+		when(repo.save(player)).thenReturn(player);
+		assertEquals(player, service.add(player));
+	}
+
 }

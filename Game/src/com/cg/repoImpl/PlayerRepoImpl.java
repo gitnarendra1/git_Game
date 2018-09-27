@@ -14,13 +14,13 @@ public class PlayerRepoImpl implements PlayerRepo {
 	}
 
 	@Override
-	public List<Player> findByName(String name) {
+	public Player findByName(String name) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Player> findByGamesName(String name) {
+	public Player findByGamesName(String name) {
 		// TODO Auto-generated method stub
 		return null;
 	}

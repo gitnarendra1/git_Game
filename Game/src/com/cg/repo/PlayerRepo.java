@@ -5,7 +5,9 @@ import java.util.List;
 import com.cg.bean.Player;
 
 public interface PlayerRepo {
-Player save(Player p);
-Player findByName(String name);
-Player findByGamesName(String name);
+
+	public Player save(Player player);
+	
+	public List<Player> findByGamesName(String gameName);
+
 }

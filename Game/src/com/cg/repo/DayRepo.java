@@ -2,7 +2,7 @@ package com.cg.repo;
 
 import java.util.List;
 
-import com.cg.beans.Day;
+import com.cg.bean.Day;
 
 public interface DayRepo {
 

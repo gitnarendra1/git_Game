@@ -1,28 +1,26 @@
 package com.cg.repoImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cg.bean.Player;
-import com.cg.repo.PlayerRepo;
 
-public class PlayerRepoImpl implements PlayerRepo {
+public class PlayerRepoImpl implements PlayerRepo{
+	
+	List<Player> players = new ArrayList<Player>();
 
-	@Override
-	public Player save(Player p) {
+	
+	public Player save(Player player) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public Player findByName(String name) {
+
+	
+	public List<Player> findByGamesName(String gameName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public Player findByGamesName(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 }
